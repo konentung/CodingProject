@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}會員登入{% endblock %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/account.css' %}">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-4 p-4 bg-transparent">
+                <h2 class="text-center mb-4 fw-bold">會員登入</h2>
+                <form method="post" id="loginForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}</label>
+                        {{ form.password }}
+                    </div>
+                    <div class="mb-3 form-check">
+                        {{ form.remember_me }}
+                        <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">記住我</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">登入</button>
+                </form>
+
+                <div class="text-center my-3">
+                    <span class="text-muted">或使用以下方式登入</span>
+                </div>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/accounts/google/login/" class="btn btn-outline-danger w-50">
+                        <i class="fab fa-google me-2"></i>Google
+                    </a>
+                    <a href="/accounts/line/login/" class="btn btn-outline-success w-50">
+                        <i class="fab fa-line me-2"></i>LINE
+                    </a>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="#" class="text-decoration-none">忘記密碼？</a>
+                    <span class="mx-2 text-muted">|</span>
+                    <a href="{% url 'Register' %}" class="text-decoration-none">註冊新帳號</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault(); // 防止表單預設送出行為
+
+            const formData = $(this).serialize();
+
+            $.ajax({
+                url: "{% url 'Login' %}", // 確保這是你 login view 的對應 URL 名稱
+                method: "POST",
+                data: formData,
+                success: function (response) {
+                    if (response.status === 'success') {
+                        alert(response.message);
+                        window.location.href = '/'; // 登入成功後導回首頁或指定頁面
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert("系統錯誤，請連絡系統管理員!");
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

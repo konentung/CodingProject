@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}課程列表{% endblock %}
+
+{% block content %}
+<link href="{% static 'css/course.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'css/index.css' %}" rel="stylesheet" type="text/css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<section class="p-5 bg-white mx-5">
+    <div class="container">
+        <h2 class="section-title mb-5">課程列表</h2>
+        <div class="row" id="courseContainer">
+            {% for course in courses %}
+            <div class="col-md-4 mb-5 course-card">
+                <div class="card">
+                    {% if course.image %}
+                    <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.title }}">
+                    {% else %}
+                    <img src="{% static 'images/course.png' %}" class="card-img-top" alt="Default Course Image">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ course.title }}</h5>
+                        <a href="{% url 'CourseDetail' course.id %}" class="btn btn-primary mt-auto">查看詳情</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <span id="pagination-info">顯示中</span>
+            <nav>
+                <ul class="pagination mb-0"></ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        const rowsPerPage = 6;
+        const rows = $('.course-card');
+        const totalRows = rows.length;
+        const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+        function showPage(page) {
+            const start = (page - 1) * rowsPerPage;
+            const end = Math.min(start + rowsPerPage, totalRows);
+            rows.hide().slice(start, end).show();
+
+            const pagination = $('.pagination');
+            pagination.empty();
+
+            let startPage = Math.max(1, page - 1);
+            let endPage = Math.min(totalPages, startPage + 2);
+            if (endPage - startPage < 2) {
+                startPage = Math.max(1, endPage - 2);
+            }
+
+            pagination.append(`<li class="page-item ${page === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="1">&laquo;</a></li>`);
+            pagination.append(`<li class="page-item ${page === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="${page - 1}">&lsaquo;</a></li>`);
+
+            for (let i = startPage; i <= endPage; i++) {
+                pagination.append(`<li class="page-item ${page === i ? 'active' : ''}">
+                    <a class="page-link" href="#" data-page="${i}">${i}</a></li>`);
+            }
+
+            pagination.append(`<li class="page-item ${page === totalPages ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="${page + 1}">&rsaquo;</a></li>`);
+            pagination.append(`<li class="page-item ${page === totalPages ? 'disabled' : ''}">
+                <a class="page-link" href="#" data-page="${totalPages}">&raquo;</a></li>`);
+
+            $('#pagination-info').text(`顯示第 ${start + 1} 筆至第 ${end} 筆，共 ${totalRows} 筆課程`);
+        }
+
+        $(document).on('click', '.pagination .page-link', function (e) {
+            e.preventDefault();
+            const page = parseInt($(this).data('page'));
+            if (page >= 1 && page <= totalPages) {
+                showPage(page);
+            }
+        });
+
+        showPage(1);
+    });
+</script>
+{% endblock %}

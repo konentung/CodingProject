@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}聯絡我們{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">聯絡我們</h4>
+                </div>
+                <div class="card-body">
+                    {% if success %}
+                        <div class="alert alert-success" role="alert">
+                            您的訊息已送出，感謝您的聯絡！
+                        </div>
+                    {% endif %}
+                    {% if errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <ul class="mb-0">
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">使用者</label>
+                            <input type="text" class="form-control" value="{{ user.username }}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="report_type" class="form-label">聯絡主題</label>
+                            <select name="report_type" id="report_type" class="form-select" onchange="toggleOtherType()">
+                                <option value="">請選擇</option>
+                                {% for type in report_types %}
+                                    <option value="{{ type.id }}">{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3" id="other_type_div" style="display:none;">
+                            <label for="other_report_type" class="form-label">其他主題</label>
+                            <input type="text" name="other_report_type" id="other_report_type" maxlength="500" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="report_content" class="form-label">內容</label>
+                            <textarea name="report_content" id="report_content" rows="5" class="form-control"></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">送出</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function toggleOtherType() {
+    var select = document.getElementById('report_type');
+    var otherTypeDiv = document.getElementById('other_type_div');
+    var selectedText = select.options[select.selectedIndex].text;
+    otherTypeDiv.style.display = (selectedText === '其他') ? 'block' : 'none';
+}
+window.onload = function() {
+    toggleOtherType();
+}
+</script>
+{% endblock %}

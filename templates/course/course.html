@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ course.title }}{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+  <!-- 課程主圖與標題 -->
+  <div class="row align-items-center mb-5">
+    <div class="col-md-6">
+      {% if course.image %}
+        <img src="{{ course.image.url }}" class="img-fluid rounded shadow" alt="{{ course.title }}">
+      {% else %}
+        <img src="{% static 'default_course.jpg' %}" class="img-fluid rounded shadow" alt="Default image">
+      {% endif %}
+    </div>
+    <div class="col-md-6">
+      <h1 class="fw-bold">{{ course.title }}</h1>
+      <p class="text-muted fs-5">{{ course.category.name }}</p>
+      {% if course.category.name == "Physical" %}
+        <ul class="list-unstyled fs-6">
+          <li><strong>📅 開課時間：</strong>{{ course.course_start_datetime|date:"Y/m/d H:i" }}</li>
+          <li><strong>🛑 結束日期：</strong>{{ course.course_end_date|date:"Y/m/d" }}</li>
+          <li><strong>👥 名額上限：</strong>{{ course.max_people }} 人</li>
+          <li><strong>💰 學費：</strong>{{ course.tuition_fee }} 元</li>
+        </ul>
+      {% endif %}
+      {% if course.apply_url %}
+        <a href="{{ course.apply_url }}" class="btn btn-primary btn-lg mt-3" target="_blank">🚀 立即報名</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 課程簡介 -->
+  <div class="mb-5">
+    <h3 class="fw-bold mb-3">課程簡介</h3>
+    <p class="fs-5">{{ course.description|linebreaks }}</p>
+  </div>
+
+  <!-- 課程影片 -->
+  {% if course.youtube_url %}
+    <div class="mb-5">
+      <h4 class="fw-bold mb-3">📽️ 課程介紹影片</h4>
+      <div class="ratio ratio-16x9">
+        <iframe src="{{ course.youtube_url }}" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

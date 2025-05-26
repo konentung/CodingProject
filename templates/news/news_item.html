@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ news_item.title }}{% endblock %}
+
+{% block content %}
+<link href="{% static 'css/index.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- 單則新聞內容 -->
+<section class="p-5 bg-white mx-5">
+    <div class="container px-5">
+        <div class="card mx-5 p-4">
+            <!-- 新聞標題區塊 -->
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h2 class="section-title mb-1">{{ news_item.title }}</h2>
+                <div>
+                    <!-- 小標籤區 -->
+                    <div class="d-flex align-items-center gap-3 mt-2">
+                        <span class="badge bg-primary text-white">
+                            <i class="bi bi-person-circle me-1"></i> {{ news_item.author }}
+                        </span>
+                        <span class="badge bg-secondary text-white">
+                            <i class="bi bi-calendar-event me-1"></i> {{ news_item.pub_date|date:"Y-m-d H:i" }}
+                        </span>
+                        <span class="badge bg-info text-white">
+                            <i class="bi bi-eye me-1"></i> {{ news_item.click_count }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            
+            <!-- 新聞圖片 -->
+            {% if news_item.image %}
+            <div style="height: 300px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+                <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}" 
+                     style="max-height: 100%; max-width: 100%; object-fit: contain;">
+            </div>
+            {% endif %}
+
+            <!-- 新聞內容 -->
+            <div class="card-body">
+                <p class="card-text fs-4">{{ news_item.content|linebreaksbr }}</p>
+                
+                {% if news_item.link %}
+                <a href="{{ news_item.link }}" class="btn btn-outline-primary" target="_blank">相關連結</a>
+                {% endif %}
+            </div>
+
+            <hr>
+
+            <!-- 留言區 -->
+            <h2 class="section-title mb-4">留言區</h2>
+
+            {% if comments %}
+                {% for comment in comments %}
+                <div class="mb-4 pb-3 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold fs-5">
+                            <i class="bi bi-person-circle me-1"></i>{{ comment.author }}
+                        </span>
+                        <span class="text-muted fs-6">
+                            <i class="bi bi-clock me-1"></i>{{ comment.pub_date|date:"Y-m-d H:i" }}
+                        </span>
+                    </div>
+                    <p class="fs-5 mb-0">{{ comment.content|linebreaksbr }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted fs-5">尚無留言，成為第一個留言的人吧！</p>
+            {% endif %}
+
+            <!-- 留言表單 -->
+            {% if user.is_authenticated %}
+            <form method="post" class="mt-5">
+                {% csrf_token %}
+                <h4 class="mb-3">發表新留言</h4>
+                <div class="mb-3">
+                    <label for="commentContent" class="form-label fs-5">留言內容</label>
+                    <textarea class="form-control fs-5" id="commentContent" name="content" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary fs-5">送出留言</button>
+            </form>
+            {% else %}
+            <p class="text-center mt-4 fs-5">請 <a href="{% url 'Login' %}">登入</a> 以發表留言。</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

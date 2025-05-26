@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}會員資訊填寫{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/account.css' %}">
+
+<div class="container mt-5 mb-5">
+    <h2 class="mb-4 fw-bold">填寫會員資訊</h2>
+    <form method="post" id="userinfo-form" class="needs-validation" novalidate>
+        {% csrf_token %}
+
+        <!-- 基本資訊：UserForm -->
+        <fieldset class="mb-4">
+            <legend class="fs-5 text-primary">基本資訊</legend>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <span class="text-danger">*</span>{{ user_form.name.label_tag }}{{ user_form.name }}
+                </div>
+                <div class="col-md-6">
+                    <span class="text-danger">*</span>{{ user_form.gender.label_tag }}{{ user_form.gender }}
+                </div>
+                <div class="col-md-6">
+                    {{ user_info_form.birthday.label_tag }}{{ user_info_form.birthday }}
+                </div>
+                <div class="col-md-6">
+                    {{ user_info_form.level.label_tag }}
+                    {{ user_info_form.level }}
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- 聯絡資訊：UserForm + UserInfoForm -->
+        <fieldset class="mb-4">
+            <legend class="fs-5 text-primary">聯絡資訊</legend>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <span class="text-danger">*</span>{{ user_form.email.label_tag }}{{ user_form.email }}
+                </div>
+                <div class="col-md-6">
+                    <span class="text-danger">*</span>{{ user_form.phone.label_tag }}{{ user_form.phone }}
+                </div>
+                <div class="col-12">
+                    {{ user_info_form.address.label_tag }}{{ user_info_form.address }}
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- 學歷與職業：UserInfoForm -->
+        <fieldset class="mb-4">
+            <legend class="fs-5 text-primary">學歷與職業</legend>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ user_info_form.school.label_tag }}{{ user_info_form.school }}
+                </div>
+                <div class="col-md-6">
+                    {{ user_info_form.company.label_tag }}{{ user_info_form.company }}
+                </div>
+                <div class="col-md-6">
+                    {{ user_info_form.job.label_tag }}{{ user_info_form.job }}
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- 驗證資料：UserInfoForm -->
+        <fieldset class="mb-4">
+            <legend class="fs-5 text-primary">驗證資料</legend>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    {{ user_info_form.cname.label_tag }}{{ user_info_form.cname }}
+                </div>
+                <div class="col-md-6">
+                    {{ user_info_form.ename.label_tag }}{{ user_info_form.ename }}
+                </div>
+                <div class="col-md-6">
+                    {{ user_info_form.identification_number.label_tag }}{{ user_info_form.identification_number }}
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- 提交按鈕 -->
+        <div class="text-end mt-4">
+            <button type="submit" class="btn btn-primary px-4">儲存資訊</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#userinfo-form').on('submit', function (e) {
+            e.preventDefault();
+            if (!this.checkValidity()) {
+                e.stopPropagation();
+                $(this).addClass('was-validated');
+                return;
+            }
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'UserInfo' %}",
+                data: formData,
+                success: function (html) {
+                    $('body').html(html);
+                    alert("資料儲存成功！");
+                    window.location.href = "{% url 'UserInfo' %}";
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status === 400) {
+                        $('body').html(xhr.responseText);
+                    } else {
+                        alert("伺服器錯誤：" + xhr.status);
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
