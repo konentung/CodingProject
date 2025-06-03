@@ -14,13 +14,13 @@
                 <p class="lead mb-4">探索最新的課程資訊，提升您的學習體驗。</p>
                 <a href="https://lin.ee/z0YvfJ2" class="btn btn-primary btn-lg">加入官方帳號</a>
                 {% if user.is_authenticated %}
-                <a href="{% url 'Logout' %}" class="btn btn-outline-primary btn-lg">查看最新課程</a>
+                <a href="{% url 'CourseList' %}" class="btn btn-outline-primary btn-lg">查看最新課程</a>
                 {% else %}
                 <a href="{% url 'Login' %}" class="btn btn-outline-primary btn-lg">立即登入</a>
                 {% endif %}
             </div>
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <img src="{% static 'img/index-main.png' %}" alt="教育大數據" class="img-fluid hero-image" />
+            <div class="col-lg-5 offset-lg-1 mb-4 mb-lg-0 text-center text-lg-start">
+                <img src="{% static 'img/2025LOGO.png' %}" alt="教育大數據" class="img-fluid hero-image" />
             </div>
         </div>
     </div>
@@ -33,13 +33,12 @@
         <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
             <!-- 輪播內容 -->
             <div class="carousel-inner text-center mb-4">
-                {% for item in news %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                {% for item in news %}                <div class="carousel-item {% if forloop.first %}active{% endif %}">
                     <div class="card mx-auto" style="max-width: 600px;">
                         <div class="card-body">
-                            <span class="news-date d-block mb-2">{{ item.date }}</span>
+                            <span class="news-date d-block mb-2">{{ item.pub_date|date:"Y-m-d" }}</span>
                             <h5 class="card-title fs-4">{{ item.title }}</h5>
-                            <p class="card-text fs-5">{{ item.content }}</p>
+                            <p class="card-text fs-5">{{ item.content|truncatewords:30 }}</p>
                             <a href="{% url 'NewsItem' item.id %}" class="btn btn-sm btn-outline-primary">閱讀更多</a>
                         </div>
                     </div>

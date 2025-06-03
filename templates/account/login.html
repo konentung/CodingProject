@@ -61,7 +61,6 @@
                 data: formData,
                 success: function (response) {
                     if (response.status === 'success') {
-                        alert(response.message);
                         window.location.href = '/'; // 登入成功後導回首頁或指定頁面
                     } else {
                         alert(response.message);

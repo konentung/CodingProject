@@ -1,0 +1,14 @@
+{% load socialaccount %}
+
+{% get_providers as socialaccount_providers %}
+
+{% for provider in socialaccount_providers %}
+  {% if provider.id == "google" %}
+  <div class="social-login">
+    <a href="{% provider_login_url provider.id process='login' %}" class="google-login-btn">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" width="20">
+      使用 Google 登入
+    </a>
+  </div>
+  {% endif %}
+{% endfor %}

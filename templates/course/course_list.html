@@ -6,14 +6,60 @@
 {% block content %}
 <link href="{% static 'css/course.css' %}" rel="stylesheet" type="text/css" />
 <link href="{% static 'css/index.css' %}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <section class="p-5 bg-white mx-5">
     <div class="container">
-        <h2 class="section-title mb-5">課程列表</h2>
+        <!-- Modified title and breadcrumb layout -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2 class="section-title mb-0">課程列表</h2>
+            </div>
+            <div class="col-md-4">
+                <nav aria-label="breadcrumb" class="breadcrumb-nav text-md-end">
+                    <ol class="breadcrumb justify-content-md-end mb-0">
+                        <li class="breadcrumb-item"><a href="{% url 'Index' %}"><i class="fas fa-home"></i> 首頁</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-book"></i> 所有課程</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- 課程類別過濾器 -->
+        <div class="filter-section mb-4">
+            <h5 class="mb-3"><i class="fas fa-filter"></i> 依類別篩選</h5>
+            <div class="d-flex flex-wrap gap-2" id="categoryFilter">
+                <span class="badge rounded-pill bg-primary px-3 py-2 category-pill active" data-category="all">
+                    全部課程
+                </span>
+                <span class="badge rounded-pill bg-secondary px-3 py-2 category-pill" data-category="Physical">
+                    <i class="fas fa-chalkboard-teacher"></i> 實體課程
+                </span>
+                <span class="badge rounded-pill bg-secondary px-3 py-2 category-pill" data-category="education">
+                    <i class="fas fa-user-graduate"></i> 教育版註冊
+                </span>
+                <span class="badge rounded-pill bg-secondary px-3 py-2 category-pill" data-category="Install">
+                    <i class="fas fa-download"></i> 程式安裝教學
+                </span>
+                <span class="badge rounded-pill bg-secondary px-3 py-2 category-pill" data-category="python">
+                    <i class="fab fa-python"></i> python初學小教室
+                </span>
+                <span class="badge rounded-pill bg-secondary px-3 py-2 category-pill" data-category="n8n">
+                    <i class="fas fa-cogs"></i> n8n
+                </span>
+                <span class="badge rounded-pill bg-secondary px-3 py-2 category-pill" data-category="AI LINE Bot">
+                    <i class="fas fa-robot"></i> AI LINE Bot練功坊
+                </span>
+                <span class="badge rounded-pill bg-secondary px-3 py-2 category-pill" data-category="LINE Bot Advance">
+                    <i class="fab fa-line"></i> LINE Bot Advance
+                </span>
+            </div>
+        </div>
+        
         <div class="row" id="courseContainer">
             {% for course in courses %}
-            <div class="col-md-4 mb-5 course-card">
+            <div class="col-md-4 mb-5 course-card" data-category="{{ course.category.name }}">
                 <div class="card">
                     {% if course.image %}
                     <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.title }}">
@@ -22,6 +68,7 @@
                     {% endif %}
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ course.title }}</h5>
+                        <p class="card-text text-muted">{{ course.description|truncatechars:80 }}</p>
                         <a href="{% url 'CourseDetail' course.id %}" class="btn btn-primary mt-auto">查看詳情</a>
                     </div>
                 </div>
@@ -41,51 +88,129 @@
 <script>
     $(document).ready(function () {
         const rowsPerPage = 6;
-        const rows = $('.course-card');
-        const totalRows = rows.length;
-        const totalPages = Math.ceil(totalRows / rowsPerPage);
+        const allCourseCards = $('.course-card');
+        let filteredCards = allCourseCards;
+        let totalRows = allCourseCards.length;
+        let totalPages = Math.ceil(totalRows / rowsPerPage);
+        let currentPage = 1;
+        let currentCategory = 'all';
+
+        // 從 URL 獲取類別參數
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryParam = urlParams.get('category');
+        if (categoryParam) {
+            currentCategory = categoryParam;
+            $('#categoryFilter .category-pill').removeClass('active bg-primary').addClass('bg-secondary');
+            $(`#categoryFilter .category-pill[data-category="${currentCategory}"]`).removeClass('bg-secondary').addClass('bg-primary active');
+            filterCourses();
+        }
+
+        // 類別篩選功能
+        $('#categoryFilter .category-pill').click(function() {
+            currentCategory = $(this).data('category');
+            
+            // 更新選中狀態
+            $('#categoryFilter .category-pill').removeClass('active bg-primary').addClass('bg-secondary');
+            $(this).removeClass('bg-secondary').addClass('bg-primary active');
+            
+            // 過濾課程
+            filterCourses();
+            
+            // 更新 URL（可選）
+            if (history.pushState) {
+                const newUrl = currentCategory === 'all' 
+                    ? window.location.pathname 
+                    : `${window.location.pathname}?category=${currentCategory}`;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+            }
+        });
+
+        function filterCourses() {
+            // 重置顯示狀態
+            allCourseCards.hide();
+            
+            if (currentCategory === 'all') {
+                filteredCards = allCourseCards;
+            } else {
+                filteredCards = allCourseCards.filter(function() {
+                    return $(this).data('category') === currentCategory;
+                });
+            }
+            
+            // 重新計算分頁
+            totalRows = filteredCards.length;
+            totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+            currentPage = 1;
+            
+            showPage(currentPage);
+        }
 
         function showPage(page) {
             const start = (page - 1) * rowsPerPage;
             const end = Math.min(start + rowsPerPage, totalRows);
-            rows.hide().slice(start, end).show();
+            
+            // 隱藏所有卡片，然後只顯示當前頁的卡片
+            allCourseCards.hide();
+            filteredCards.slice(start, end).show();
 
+            // 更新分頁控制項
+            updatePagination(page);
+
+            // 更新顯示信息
+            if (totalRows > 0) {
+                $('#pagination-info').text(`顯示第 ${start + 1} 筆至第 ${end} 筆，共 ${totalRows} 筆課程`);
+            } else {
+                $('#pagination-info').text('沒有符合條件的課程');
+            }
+        }
+
+        function updatePagination(page) {
             const pagination = $('.pagination');
             pagination.empty();
 
+            // 如果沒有課程或只有一頁，不顯示分頁
+            if (totalPages <= 1) {
+                return;
+            }
+
+            // 生成分頁按鈕
             let startPage = Math.max(1, page - 1);
             let endPage = Math.min(totalPages, startPage + 2);
             if (endPage - startPage < 2) {
                 startPage = Math.max(1, endPage - 2);
             }
 
+            // 首頁和上一頁按鈕
             pagination.append(`<li class="page-item ${page === 1 ? 'disabled' : ''}">
                 <a class="page-link" href="#" data-page="1">&laquo;</a></li>`);
             pagination.append(`<li class="page-item ${page === 1 ? 'disabled' : ''}">
                 <a class="page-link" href="#" data-page="${page - 1}">&lsaquo;</a></li>`);
 
+            // 頁碼按鈕
             for (let i = startPage; i <= endPage; i++) {
                 pagination.append(`<li class="page-item ${page === i ? 'active' : ''}">
                     <a class="page-link" href="#" data-page="${i}">${i}</a></li>`);
             }
 
+            // 下一頁和尾頁按鈕
             pagination.append(`<li class="page-item ${page === totalPages ? 'disabled' : ''}">
                 <a class="page-link" href="#" data-page="${page + 1}">&rsaquo;</a></li>`);
             pagination.append(`<li class="page-item ${page === totalPages ? 'disabled' : ''}">
                 <a class="page-link" href="#" data-page="${totalPages}">&raquo;</a></li>`);
-
-            $('#pagination-info').text(`顯示第 ${start + 1} 筆至第 ${end} 筆，共 ${totalRows} 筆課程`);
         }
 
+        // 綁定分頁點擊事件
         $(document).on('click', '.pagination .page-link', function (e) {
             e.preventDefault();
             const page = parseInt($(this).data('page'));
-            if (page >= 1 && page <= totalPages) {
-                showPage(page);
+            if (!isNaN(page) && page >= 1 && page <= totalPages) {
+                currentPage = page;
+                showPage(currentPage);
             }
         });
 
-        showPage(1);
+        // 初始化顯示
+        filterCourses();
     });
 </script>
 {% endblock %}

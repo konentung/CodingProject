@@ -77,6 +77,10 @@ def register(request):
 
     return render(request, 'account/register.html', locals())
 
+# 網站地圖頁面
+def sitemap_view(request):
+    return render(request, 'sitemap.html')
+
 # user info view
 @login_required(redirect_field_name='UserInfo')
 def user_info(request):

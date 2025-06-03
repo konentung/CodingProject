@@ -32,7 +32,8 @@ def report_view(request):
                 report_content=report_content
             )
             request.session['contact_success'] = True
-            return redirect('ContactUs')
+            next_url = request.GET.get('next') or 'ContactUs'
+            return redirect(next_url)
     if request.session.pop('contact_success', None):
         success = True
     return render(request, 'report/report.html', locals())

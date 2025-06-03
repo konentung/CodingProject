@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}網站地圖 - 國北教大教育大數據{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/sitemap.css' %}">
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+<section class="p-5 bg-white mx-5">
+    <div class="container">
+        <h2 class="section-title mb-5">網站地圖</h2>
+        <p class="mb-4">探索我們網站的所有內容，點擊展開各項目以查看詳細內容。</p>
+
+        <div class="accordion" id="sitemapAccordion">
+            <!-- 首頁 -->
+            <div class="accordion-item border-0 mb-3">
+                <h2 class="accordion-header" id="headingHome">
+                    <button class="accordion-button shadow-sm collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseHome" aria-expanded="true" aria-controls="collapseHome">
+                        <i class="fas fa-home me-2"></i> 首頁
+                    </button>
+                </h2>
+                <div id="collapseHome" class="accordion-collapse collapse" aria-labelledby="headingHome"
+                    data-bs-parent="#sitemapAccordion">
+                    <div class="accordion-body ps-5">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="{% url 'Index' %}">首頁概覽</a></li>
+                            <li class="mb-2"><a href="#hero-section">主要橫幅</a></li>
+                            <li class="mb-2"><a href="#features-section">特色介紹</a></li>
+                            <li class="mb-2"><a href="#news-section">最新消息</a></li>
+                            <li><a href="#courses-section">熱門課程</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最新消息 -->
+            <div class="accordion-item border-0 mb-3">
+                <h2 class="accordion-header" id="headingNews">
+                    <button class="accordion-button shadow-sm collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseNews" aria-expanded="false" aria-controls="collapseNews">
+                        <i class="fas fa-newspaper me-2"></i> 最新消息
+                    </button>
+                </h2>
+                <div id="collapseNews" class="accordion-collapse collapse" aria-labelledby="headingNews"
+                    data-bs-parent="#sitemapAccordion">
+                    <div class="accordion-body ps-5">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="#news-section">最新消息列表</a></li>
+                            <li class="mb-2"><a href="#">活動公告</a></li>
+                            <li><a href="#">課程更新</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 課程資訊 -->
+            <div class="accordion-item border-0 mb-3">
+                <h2 class="accordion-header" id="headingCourses">
+                    <button class="accordion-button shadow-sm collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseCourses" aria-expanded="false" aria-controls="collapseCourses">
+                        <i class="fas fa-graduation-cap me-2"></i> 課程資訊
+                    </button>
+                </h2>
+                <div id="collapseCourses" class="accordion-collapse collapse" aria-labelledby="headingCourses"
+                    data-bs-parent="#sitemapAccordion">
+                    <div class="accordion-body ps-5">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="{% url 'CourseList' %}">所有課程</a></li>
+                            <li class="mb-2"><a href="#">程式設計</a></li>
+                            <li class="mb-2"><a href="#">數據分析</a></li>
+                            <li class="mb-2"><a href="#">設計創作</a></li>
+                            <li class="mb-2"><a href="#">語言學習</a></li>
+                            <li><a href="#">職場技能</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 會員專區 -->
+            <div class="accordion-item border-0 mb-3">
+                <h2 class="accordion-header" id="headingAccount">
+                    <button class="accordion-button shadow-sm collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseAccount" aria-expanded="false" aria-controls="collapseAccount">
+                        <i class="fas fa-user me-2"></i> 會員專區
+                    </button>
+                </h2>
+                <div id="collapseAccount" class="accordion-collapse collapse" aria-labelledby="headingAccount"
+                    data-bs-parent="#sitemapAccordion">
+                    <div class="accordion-body ps-5">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="{% url 'Login' %}">會員登入</a></li>
+                            <li class="mb-2"><a href="{% url 'UserInfo' %}">會員資料</a></li>
+                            <li class="mb-2"><a href="#">我的課程</a></li>
+                            <li><a href="#">學習進度</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 聯絡我們 -->
+            <div class="accordion-item border-0 mb-3">
+                <h2 class="accordion-header" id="headingContact">
+                    <button class="accordion-button shadow-sm collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseContact" aria-expanded="false" aria-controls="collapseContact">
+                        <i class="fas fa-envelope me-2"></i> 聯絡我們
+                    </button>
+                </h2>
+                <div id="collapseContact" class="accordion-collapse collapse" aria-labelledby="headingContact"
+                    data-bs-parent="#sitemapAccordion">
+                    <div class="accordion-body ps-5">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="{% url 'ContactUs' %}">聯絡表單</a></li>
+                            <li class="mb-2"><a href="#">常見問題</a></li>
+                            <li><a href="#">交通資訊</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 關於我們 -->
+            <div class="accordion-item border-0 mb-3">
+                <h2 class="accordion-header" id="headingAbout">
+                    <button class="accordion-button shadow-sm collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseAbout" aria-expanded="false" aria-controls="collapseAbout">
+                        <i class="fas fa-info-circle me-2"></i> 關於我們
+                    </button>
+                </h2>
+                <div id="collapseAbout" class="accordion-collapse collapse" aria-labelledby="headingAbout"
+                    data-bs-parent="#sitemapAccordion">
+                    <div class="accordion-body ps-5">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="#">中心簡介</a></li>
+                            <li class="mb-2"><a href="#">教師團隊</a></li>
+                            <li class="mb-2"><a href="#">合作夥伴</a></li>
+                            <li><a href="#">研究成果</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 其他連結 -->
+            <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="headingOthers">
+                    <button class="accordion-button shadow-sm collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseOthers" aria-expanded="false" aria-controls="collapseOthers">
+                        <i class="fas fa-link me-2"></i> 其他連結
+                    </button>
+                </h2>
+                <div id="collapseOthers" class="accordion-collapse collapse" aria-labelledby="headingOthers"
+                    data-bs-parent="#sitemapAccordion">
+                    <div class="accordion-body ps-5">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><a href="#">隱私政策</a></li>
+                            <li class="mb-2"><a href="#">使用條款</a></li>
+                            <li><a href="#">網站地圖</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,46 @@
+/* 自訂摺疊面板樣式 */
+.accordion-button {
+    border-radius: 5px !important;
+    background-color: #f8f9fa;
+}
+
+.accordion-button:not(.collapsed) {
+    color: #0d6efd;
+    background-color: #e7f1ff;
+    box-shadow: none;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(0, 0, 0, .125);
+}
+
+/* 自訂箭頭樣式 */
+.accordion-button::after {
+    content: '\f054';  /* Font Awesome 向右箭頭 */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    background-image: none;
+    font-size: 0.8rem;
+    width: auto;
+    height: auto;
+    transition: transform 0.2s ease;
+}
+
+.accordion-button:not(.collapsed)::after {
+    content: '\f054';
+    transform: rotate(90deg);
+    background-image: none;
+}
+
+/* 連結樣式 */
+.accordion-body a {
+    color: #495057;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.accordion-body a:hover {
+    color: #0d6efd;
+    text-decoration: underline;
+}
