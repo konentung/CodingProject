@@ -1,0 +1,117 @@
+/* Breadcrumb Custom Styling */
+.breadcrumb-nav {
+    background-color: transparent;
+}
+
+.breadcrumb {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    flex-wrap: wrap;
+}
+
+.breadcrumb-item {
+    white-space: nowrap;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.breadcrumb-item:last-child {
+    max-width: 250px;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "\f105"; /* Font Awesome chevron-right icon */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    color: #6c757d;
+}
+
+.breadcrumb-item a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+}
+
+/* Filter Section Styling */
+.filter-section {
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+/* Course Card Styling */
+.course-card .card {
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.course-card .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.course-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.course-card .card-title {
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.course-card .card-body {
+    padding: 1.25rem;
+}
+
+/* Category Pills */
+.category-pill {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.category-pill:hover {
+    background-color: #e9ecef;
+}
+
+.category-pill.active {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .d-flex.justify-content-between.align-items-center,
+    .d-flex.justify-content-between.align-items-start {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+    
+    .text-md-end,
+    .justify-content-md-end {
+        text-align: left !important;
+        justify-content: flex-start !important;
+    }
+    
+    .breadcrumb-nav {
+        margin-top: 10px;
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    /* Improve title display when long */
+    h1.fw-bold, 
+    h2.section-title {
+        word-break: break-word;
+    }
+}

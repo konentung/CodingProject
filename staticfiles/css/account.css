@@ -1,0 +1,12 @@
+.txt {
+    border: 1px solid #bec8dfbd;
+    border-radius: 0.375rem;
+    background-color: #fff;
+    box-shadow: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:disabled {
+    background-color: #e9ecef !important;
+    cursor: not-allowed;
+}
