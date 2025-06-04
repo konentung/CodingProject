@@ -29,20 +29,40 @@ def login_view(request):
                 username = form.cleaned_data['username']
                 password = form.cleaned_data['password']
                 remember_me = form.cleaned_data.get('remember_me', False)
-
+                
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     login(request, user)
                     if remember_me:
                         request.session.set_expiry(1209600)
-                    return JsonResponse({'status': 'success', 'message': '登入成功!'})
+                    
+                    # 檢查是 AJAX 請求還是普通表單提交
+                    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                        return JsonResponse({'status': 'success', 'message': '登入成功!', 'redirect': '/'})
+                    else:
+                        return redirect('Index')  # 如果不是 AJAX 請求，直接重定向
                 else:
-                    return JsonResponse({'status': 'error', 'message': '帳號或密碼錯誤!'})
+                    # 帳號或密碼錯誤
+                    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                        return JsonResponse({'status': 'error', 'message': '帳號或密碼錯誤!', 'redirect': reverse('Login')})
+                    else:
+                        form.add_error(None, '帳號或密碼錯誤!')
+                        return render(request, 'account/login.html', {'form': form})
             else:
-                return JsonResponse({'status': 'error', 'message': '輸入錯誤!'})
+                # 表單驗證失敗
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'status': 'error', 'message': '輸入錯誤!', 'redirect': reverse('Login')})
+                else:
+                    return render(request, 'account/login.html', {'form': form})
         except Exception as e:
             traceback.print_exc()
-            return JsonResponse({'status': 'error', 'message': '系統錯誤，請連絡系統管理員!'})
+            # 系統錯誤
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'error', 'message': '系統錯誤，請連絡系統管理員!'})
+            else:
+                form = LoginForm()
+                form.add_error(None, '系統錯誤，請連絡系統管理員!')
+                return render(request, 'account/login.html', {'form': form})
     else:
         return render(request, 'account/login.html', {'form': LoginForm()})
 
